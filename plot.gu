@@ -1,0 +1,30 @@
+#set terminal wxt size 400, 600
+set terminal pngcairo  transparent enhanced size 400, 600 
+
+set xrang [ -10 : 50 ]
+set yrang [ -10 : 90 ]
+
+set style fill transparent solid .5 noborder
+set style circle radius 2.5
+unset key
+
+do for [i=0:400] { 
+    pic=sprintf('pic%05i.png', i )
+    set output pic 
+    plot "particle.txt" index i using 1:2 with circles lc rgb "#FFA500"
+}
+
+# Create movie with mencoder
+ENCODER = system('which mencoder');
+if (strlen(ENCODER)==0) print '=== mencoder not found ==='; exit
+CMD = 'mencoder mf://*.png -mf fps=25:type=png -ovc lavc -lavcopts vcodec=mpeg4:mbd=2:trell -oac copy -o sph.avi'
+system(CMD)
+
+# Create webm
+ENCODER = system('which ffmpeg')
+if (strlen(ENCODER)==0) print '=== ffmpeg not found, exit ==='; exit
+CMD = 'ffmpeg -i sph.avi sph.webm'
+system(CMD)
+
+# Clear directory
+system('rm *.png')
