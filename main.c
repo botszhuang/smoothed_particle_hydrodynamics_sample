@@ -46,6 +46,7 @@ const xyStruct CONSTANT_FORCE = ( xyStruct ) { .x = 0 , .y = -0.1 } ;
 void initParticles ( testParticleProfileStruct * p ) ;
 void printParticles ( const unsigned int currentParticleNumber ,
                       testParticleProfileStruct * p ) ;
+unsigned int increase_particle_number ( const unsigned int currentParticleNumber , const unsigned l ) ;                      
 double get_distance ( xyStruct a , xyStruct b ) ;
 void calculate_distance ( const unsigned int currentParticleNumber , 
                           testParticleProfileStruct * particles  ) ;
@@ -81,17 +82,7 @@ int main()
  unsigned int currentParticleNumber = 0 ;
  for ( unsigned int l = 0 ; l < N_TIME_STEPS ; l++ ) {
 
-   if ( currentParticleNumber < MAX_NUMBER_PARTICLES )
-   {
-    if ( ( l % ADD_PARTICELS_EVERY ) == 0 ) 
-    {
-        currentParticleNumber += 3 ;
-        if ( currentParticleNumber > MAX_NUMBER_PARTICLES ) 
-        {
-        currentParticleNumber = MAX_NUMBER_PARTICLES ;
-        }
-    }
-   }
+   currentParticleNumber = increase_particle_number ( currentParticleNumber , l ) ;
    
    calculate_distance ( currentParticleNumber ,particles ) ;
    calculate_density  ( currentParticleNumber ,particles ) ;
@@ -255,6 +246,22 @@ void calculate_distance ( const unsigned int currentParticleNumber , testParticl
         distanceMatrix[i][j] = get_distance ( particles [i].x , particles [j].x ) ;
    }}
 }
+unsigned int increase_particle_number ( const unsigned int currentParticleNumber , const unsigned l )
+{
+  unsigned int NewparticleNumber = currentParticleNumber ;
+   if ( currentParticleNumber < MAX_NUMBER_PARTICLES )
+   {
+    if ( ( l % ADD_PARTICELS_EVERY ) == 0 ) 
+    {
+        NewparticleNumber += 3 ;
+        if ( NewparticleNumber > MAX_NUMBER_PARTICLES ) 
+        {
+          NewparticleNumber = MAX_NUMBER_PARTICLES ;
+        }
+    }
+   }
+   return NewparticleNumber ;
+}                     
 void printParticles ( const unsigned int currentParticleNumber ,
                       testParticleProfileStruct * p ) 
 {
